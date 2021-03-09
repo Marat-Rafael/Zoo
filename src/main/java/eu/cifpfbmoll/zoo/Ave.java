@@ -78,6 +78,11 @@ public class Ave extends Animal {
         return animal;
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
     /**
      * Un metodo que muestra contador de animales y el contador de aves
      */
@@ -89,76 +94,99 @@ public class Ave extends Animal {
     }
 
     public static void nuevoAve(ArrayList<Animal> listaAnimales) {
-        
+
         Ave ave = new Ave();
-        
+
         System.out.println("Nombre: ");
         String nombre = scString.nextLine();
         ave.setNombre(nombre);
-        
+
         System.out.println("Peso: ");
         ave.setPeso(scNum.nextDouble());
-        
+
         System.out.println("Numero alas: ");
         ave.setNumAlas(scNum.nextInt());
-        
+
         System.out.println("Longitud del vuelo: ");
         ave.setLongitudVuelo(scNum.nextDouble());
 
         listaAnimales.add(ave);
     }
 
-    public static void mostrarOrdenAveVuelo(ArrayList<Animal> listaAnimales) {
+    private static void mostrarTodosAves(ArrayList<Ave> listaAve) {
+        for (int i = 0; i < listaAve.size(); i++) {
+            System.out.println(listaAve.get(i).mostrarAnimal());
+        }
+    }// fon mostrarAve
 
+    private static ArrayList<Ave> ExtraerAves(ArrayList<Animal> listaAnimales) {
         ArrayList<Ave> listaAves = new ArrayList<>();
-
         for (int i = 0; i < listaAnimales.size(); i++) {
             if (listaAnimales.get(i) instanceof Ave) {
-                // si es ave usamos casting y metemos en arrayList de aves
                 listaAves.add((Ave) listaAnimales.get(i));
             }
         }
-        Collections.sort(listaAves, new Comparator<Ave>() {
-            public int compare(Ave a1, Ave a2) {
-                // usamos double porque longitud de vuelo declarado como double
-                // asi sera orden ascedente
-                // para descendente cambiamos a1 y a2 
-                return Double.valueOf(a1.getLongitudVuelo()).compareTo(a2.getLongitudVuelo());
-            }
-        });
-        // usamos 'for' para mostrar 
-        for (int i = 0; i < listaAves.size(); i++) {
-            System.out.println(listaAves.get(i).mostrarAnimal());
+        return listaAves;
+    }//fin metodo extraer Aves
 
-        }
-    }// fin metodo mostrar orden vuelo
-    
-    public static void mostrarOrdenAveNumAlas(ArrayList<Animal>listaAnimales){
-        // creo un array solo para aves
-        ArrayList<Ave> listaAves = new ArrayList<>();
-        
-        for (int i = 0; i < listaAnimales.size(); i++) {
-            if(listaAnimales.get(i) instanceof Ave){
-                listaAves.add((Ave)listaAnimales.get(i));
-            }           
-        }
-        // usamos collections para ordenar
-        Collections.sort(listaAves,new Comparator<Ave>()
-        // tenemos que especificar que metodo usamos para comparar, va entre llaves
-        {
-            public int compare(Ave a1, Ave a2){
-                
-                return Integer.valueOf(a1.getNumAlas()).compareTo(a2.getNumAlas());
+    private static void ordenarPorLongitudVuelo(ArrayList<Animal> listaAnimales) {
+        // creamos nuevo array solo para aves
+        ArrayList<Ave> listaAves = ExtraerAves(listaAnimales);
+        //Creamos Ave auxiliar
+        Ave aux;
+        for (int i = 0; i < listaAves.size() - 1; i++) {
+            for (int j = 0; j < listaAves.size() - i - 1; j++) {
+                if (listaAves.get(j + 1).getLongitudVuelo() < listaAves.get(j).getLongitudVuelo()) {
+                    aux = listaAves.get(j + 1);
+                    listaAves.set(j + 1, listaAves.get(j));
+                    listaAves.set(j, aux);
+                }
             }
         }
-        );
-        // usamos 'for' para mostrar
-        for (int i = 0; i < listaAves.size(); i++) {
-            System.out.println(listaAves.get(i).mostrarAnimal());
-            
-        }
-    }// fin metodo mostrarOrdenAveNumAlas
+        mostrarTodosAves(listaAves);
+    }// fin metodo ordenarPorLongitudVuelo
 
-    
+    private static void ordenarPorNumAlas(ArrayList<Animal> listaAnimales) {
+        //creamos arraylist solo para aves
+        ArrayList<Ave> listaAves = ExtraerAves(listaAnimales);
+        //creamos ave auxiliar
+        Ave aux;
+        for (int i = 0; i < listaAves.size()-1; i++) {
+            for (int j = 0; j < listaAves.size()-i-1; j++) {
+                if(listaAves.get(j+1).getNumAlas()<listaAves.get(j).getNumAlas()){
+                    aux = listaAves.get(j+1);
+                    listaAves.set(j+1, listaAves.get(j));
+                    listaAves.set(j, aux);                   
+                }               
+            }            
+        }
+        mostrarTodosAves(listaAves);
+    }//fin metodo ordenarPorNumAlas
+
+    public static void mostrarAvesOrdenado(ArrayList<Animal> listaAnimales) {
+        boolean salir = false;
+        do {
+            System.out.println("Como desea ordenar Aves ? ");
+            System.out.println("1-Longitud de vuelo");
+            System.out.println("2-Numero de alas");
+            System.out.println("0-Salir");
+            byte opcionMenu = scNum.nextByte();
+            switch (opcionMenu) {
+                case 1:
+                    ordenarPorLongitudVuelo(listaAnimales);
+                    break;
+                case 2:
+                    ordenarPorNumAlas(listaAnimales);
+                    break;
+                case 0:
+                    salir = true;
+                    break;
+                default:
+                    System.out.println("Opciones disponibles 1-longitud de vuelo, 2-Numero de alas, 0-Salir");
+            }
+
+        } while (!salir);
+
+    }// fin mostrarOrdenado
 
 }// fin clase

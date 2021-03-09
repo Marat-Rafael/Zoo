@@ -31,7 +31,5 @@ public class Zoo {
     public void altaAve(){
         Ave.nuevoAve(listaAnimales);
     }
-   
-    
-    
+ 
 }
